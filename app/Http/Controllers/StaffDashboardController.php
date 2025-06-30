@@ -108,12 +108,17 @@ class StaffDashboardController extends Controller
 
         // Floor options for the form
         $floorOptions = [
-            'ground' => 'Ground Floor - Reception',
-            '1st' => '1st Floor - HR & Admin',
-            '2nd' => '2nd Floor - Finance',
-            '3rd' => '3rd Floor - IT Department',
-            '4th' => '4th Floor - Management',
-            '5th' => '5th Floor - Conference Rooms',
+            'ground' => 'Ground Floor',
+            'mezzanine' => 'Mezzanine',
+            '1st' => 'Floor 1',
+            '2nd' => 'Floor 2',
+            '3rd' => 'Floor 3',
+            '4th' => 'Floor 4',
+            '5th' => 'Floor 5',
+            '6th' => 'Floor 6',
+            '7th' => 'Floor 7',
+            '8th' => 'Floor 8',
+            '9th' => 'Floor 9',
         ];
 
         return view('staff.dashboard', compact(
