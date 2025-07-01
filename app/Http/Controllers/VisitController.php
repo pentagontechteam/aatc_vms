@@ -66,7 +66,7 @@ class VisitController extends Controller
 
 public function deny(Visit $visit): RedirectResponse
 {
-    $visit->update(['status' => 'denied']);
+    $visit->update(['status' => 'rejected']);
     return redirect()->route('sm.dashboard')->with('success', 'Visit denied successfully');
 }
 

@@ -76,7 +76,7 @@ Route::post('/upload-visitors-csv', [ModalController::class, 'uploadCSV'])
         Route::post('/visits/edit', [StaffDashboardController::class, 'editVisit'])->name('staff.dashboard.edit');
 
         // Logout
-        Route::post('/logout', [StaffAuthController::class, 'logout'])->name('staff.logout');
+        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 
 // Reception Staff Routes

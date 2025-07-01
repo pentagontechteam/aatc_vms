@@ -9,6 +9,7 @@ use App\Models\AccessCard;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class StaffDashboardController extends Controller
 {
@@ -142,57 +143,156 @@ class StaffDashboardController extends Controller
     /**
      * Send invitation to guest
      */
-    public function sendInvitation(Request $request)
-    {
-        $request->validate([
-            'guest_name' => 'required|string|max:255',
-            'guest_email' => 'required|email|max:255',
-            'guest_phone' => 'required|string|max:20',
-            'organization' => 'nullable|string|max:255',
-            'visit_reason' => 'required|string|max:500',
-            'visit_date' => 'required|date|after_or_equal:today',
-            'visit_time' => 'required',
-            'floor' => 'required|string',
-        ]);
+    // public function sendInvitation(Request $request)
+    // {
+    //     $request->validate([
+    //         'guest_name' => 'required|string|max:255',
+    //         'guest_email' => 'required|email|max:255',
+    //         'guest_phone' => 'required|string|max:20',
+    //         'organization' => 'nullable|string|max:255',
+    //         'visit_reason' => 'required|string|max:500',
+    //         'visit_date' => 'required|date|after_or_equal:today',
+    //         'visit_time' => 'required',
+    //         'floor' => 'required|string',
+    //     ]);
 
-        try {
-            // Create or find visitor
+    //     try {
+    //         // Create or find visitor
+    //         $visitor = Visitor::firstOrCreate(
+    //             ['email' => $request->guest_email],
+    //             [
+    //                 'name' => $request->guest_name,
+    //                 'phone' => $request->guest_phone,
+    //                 'organization' => $request->organization,
+    //             ]
+    //         );
+
+    //         // Create visit
+    //         $visit = Visit::create([
+    //             'visitor_id' => $visitor->id,
+    //             'staff_id' => auth('staff')->id(),
+    //             'visit_date' => $request->visit_date,
+    //             'reason' => $request->visit_reason,
+    //             'status' => 'pending',
+    //             'unique_code' => 'VMS-' . date('Y') . '-' . str_pad(Visit::count() + 1, 3, '0', STR_PAD_LEFT),
+    //             'floor_of_visit' => $request->floor,
+    //         ]);
+
+    //         // Here you would typically send an email to the visitor
+    //         // Mail::to($visitor->email)->send(new VisitorInvitation($visit));
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Invitation sent successfully! Your guest will receive an email with the invitation code.',
+    //             'visit' => $visit->load('visitor')
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to send invitation. Please try again.'
+    //         ], 500);
+    //     }
+    // }
+    public function sendInvitation(Request $request)
+{
+    // Verify staff is authenticated
+    if (!auth('staff')->check()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized - Staff not authenticated',
+        ], 401);
+    }
+
+    // Get the authenticated staff member
+    $staff = auth('staff')->user();
+    $staffId = $staff->id;
+
+    $request->validate([
+        'guests' => 'required|array',
+        'guests.*.name' => 'required|string|max:255',
+        'guests.*.email' => 'required|email|max:255',
+        'guests.*.phone' => 'required|string|max:20',
+        'guests.*.organization' => 'nullable|string|max:255',
+        'guests.*.reason' => 'required|string|max:500',
+        'guests.*.date' => 'required|date|after_or_equal:today',
+        'guests.*.time' => 'required',
+        'guests.*.floor' => 'required|string|max:50',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        $createdVisits = [];
+
+        foreach ($request->guests as $guestData) {
+            $visitDateTime = Carbon::createFromFormat(
+                'Y-m-d H:i',
+                $guestData['date'] . ' ' . $guestData['time']
+            );
+
+            // Find or create visitor
             $visitor = Visitor::firstOrCreate(
-                ['email' => $request->guest_email],
+                ['email' => $guestData['email']],
                 [
-                    'name' => $request->guest_name,
-                    'phone' => $request->guest_phone,
-                    'organization' => $request->organization,
+                    'name' => $guestData['name'],
+                    'phone' => $guestData['phone'],
+                    'organization' => $guestData['organization'] ?? null,
                 ]
             );
 
-            // Create visit
+            // Generate unique code (similar to storeVisitors but more readable)
+            $uniqueCode = strtoupper(
+                dechex(time() % 0xFFFF) . '-' .
+                dechex(rand(0, 0xFFFF))
+            );
+
+            // Create visit record
             $visit = Visit::create([
                 'visitor_id' => $visitor->id,
-                'staff_id' => auth('staff')->id(),
-                'visit_date' => $request->visit_date,
-                'reason' => $request->visit_reason,
+                'staff_id' => $staffId,
+                'visit_date' => $visitDateTime,
+                'reason' => $guestData['reason'],
                 'status' => 'pending',
-                'unique_code' => 'VMS-' . date('Y') . '-' . str_pad(Visit::count() + 1, 3, '0', STR_PAD_LEFT),
-                'floor_of_visit' => $request->floor,
+                'unique_code' => $uniqueCode,
+                'floor_of_visit' => $guestData['floor'],
+                'checked_in_at' => null,
+                'checked_out_at' => null,
+                'checkin_by' => null,
+                'checkout_by' => null,
+                'is_checked_in' => false,
+                'is_checked_out' => false,
+                'verification_message' => 'Visitor has not arrived at the gate',
             ]);
 
-            // Here you would typically send an email to the visitor
+            $createdVisits[] = $visit;
+
+            // Here you would typically send an email to each visitor
             // Mail::to($visitor->email)->send(new VisitorInvitation($visit));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Invitation sent successfully! Your guest will receive an email with the invitation code.',
-                'visit' => $visit->load('visitor')
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send invitation. Please try again.'
-            ], 500);
         }
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invitations sent successfully!',
+            'data' => [
+                'count' => count($createdVisits),
+                'visits' => $createdVisits,
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Invitation failed: ' . $e->getMessage());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send invitations. Please try again.',
+            'error' => config('app.debug') ? $e->getMessage() : null
+        ], 500);
     }
+}
 
     /**
      * Cancel visit invitation

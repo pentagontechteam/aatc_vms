@@ -1,4 +1,137 @@
-<!DOCTYPE html>
+@extends('layouts.staff')
+
+@section('title', 'Staff Dashboard')
+
+@section('body')
+    <x-staff-header
+        :user="auth('staff')->user()"
+        :full-name="$fullName"
+    />
+
+    <x-staff-sidebar
+        :user="auth('staff')->user()"
+        :full-name="$fullName"
+        :staff-email="$staffEmail"
+    />
+
+    <main class="max-w-[84rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <x-dashboard-stats
+            :stats="compact(
+                'totalInvitations',
+                'percentageTotalInvitations',
+                'approvedToday',
+                'percentageApproved',
+                'pendingApproval',
+                'percentagePendingApproval',
+                'denied',
+                'percentageDenied'
+            )"
+        />
+    <!-- Visitor Management Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
+                    Invite Guest
+                </button>
+                <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
+                    Active Visits
+                </button>
+                <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
+                    Visit History
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            <!-- Invite Guest Tab -->
+            <x-invite-guest-tab />
+
+            <!-- Active Visits Tab -->
+            <x-active-visits-tab :activeVisits="$activeVisits" />
+
+            <!-- Visit History Tab -->
+            <x-visit-history-tab :visitHistory="$visitHistory" />
+        </div>
+    </div>
+</main>
+
+<!-- Edit Visit Modal -->
+<div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Edit Visit Details</h3>
+                <form id="edit-form" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="visit_id" id="edit_visit_id">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="edit_guest_name" class="block text-sm font-medium text-gray-700">Full Name *</label>
+                            <input type="text" name="guest_name" id="edit_guest_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_guest_email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+                            <input type="email" name="guest_email" id="edit_guest_email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_guest_phone" class="block text-sm font-medium text-gray-700">Phone Number *</label>
+                            <input type="tel" name="guest_phone" id="edit_guest_phone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_organization" class="block text-sm font-medium text-gray-700">Organization</label>
+                            <input type="text" name="organization" id="edit_organization" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="edit_visit_reason" class="block text-sm font-medium text-gray-700">Reason for Visit *</label>
+                            <textarea name="visit_reason" id="edit_visit_reason" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div>
+                            <label for="edit_visit_date" class="block text-sm font-medium text-gray-700">Visit Date *</label>
+                            <input type="date" name="visit_date" id="edit_visit_date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_floor" class="block text-sm font-medium text-gray-700">Floor/Department *</label>
+                            <select name="floor" id="edit_floor" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">Select floor or department</option>
+                                @foreach($floorOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="submitEditForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#22807e] hover:bg-[#00aa8c] text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Save Changes
+                </button>
+                <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-4 right-4 hidden">
+    <div class="bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
+        <span id="toast-message"></span>
+        <button onclick="document.getElementById('toast').classList.add('hidden')" class="ml-4">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+@endsection
+
+
+
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -93,7 +226,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
-                            {{-- <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span> --}}
                         </button>
 
                         <!-- Notification Dropdown -->
@@ -534,12 +666,7 @@
                                         <div class="space-y-2">
                                             <div class="relative">
                                                 <input type="file" accept=".csv" id="csv-import" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                                {{-- <button type="button" class="w-full px-4 py-2 text-sm border text-white rounded-md bg-[#07AF8B] hover:bg-[#007570]">
-                                                    <i class="fas fa-upload mr-2"></i>
-                                                    Import Guests from CSV
-                                                </button> --}}
                                                 <button type="button"
-                                                {{-- class="w-full px-4 py-2 text-sm border text-white rounded-md bg-[#07AF8B] hover:bg-[#007570]"> --}}
                                                 class="w-full px-4 py-3 rounded-xl text-white text-base font-medium transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer">
                                                     <i class="fas fa-upload mr-2"></i>
                                                     Import Guests from CSV
@@ -547,8 +674,6 @@
                                             </div>
                                             <button type="button" id="download-template"
                                             class="w-full px-4 py-3 rounded-xl text-base font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 active:translate-y-0 hover:-translate-y-px cursor-pointer">
-                                            {{-- class="w-full px-4 py-3 rounded-xl text-base font-medium flex items-center justify-center transition-all duration-200 border-gray-300 hover:bg-gray-50 active:translate-y-0 hover:-translate-y-px cursor-pointer"> --}}
-                                                {{-- class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"> --}}
                                                 <i class="fas fa-download mr-2"></i>
                                                 Download CSV Template
                                             </button>
@@ -572,9 +697,6 @@
 
                             <!-- Submit Button -->
                             <div class="flex justify-end mt-8">
-                                {{-- <button type="submit" id="submit-btn" class="bg-[#22807e] hover:bg-[#00aa8c] text-white px-8 py-2 rounded-md font-medium">
-                                    Send All Invitations (<span id="submit-count">1</span>)
-                                </button> --}}
                                 <button type="submit" id="submit-btn"
     class="px-4 py-3 rounded-xl text-white text-base font-medium flex items-center justify-center transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer">
     Send All Invitations (<span id="submit-count">1</span>)
@@ -1441,3 +1563,5 @@
     </script>
 </body>
 </html>
+
+ --}}
