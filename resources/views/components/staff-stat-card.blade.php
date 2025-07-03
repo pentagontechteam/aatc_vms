@@ -9,6 +9,9 @@
         <p class="text-3xl font-bold {{ $textColor }}">{{ $value }}</p>
         <p class="ml-2 flex items-baseline text-sm font-semibold {{ $getPercentageColorClass() }}">
             {{ $percentage }}
+            @if($appendPercentageSymbol)
+                <span>%</span>
+            @endif
         </p>
     </dd>
 </div>

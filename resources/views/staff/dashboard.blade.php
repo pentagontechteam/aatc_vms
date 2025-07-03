@@ -20,7 +20,11 @@
                 'totalInvitations',
                 'percentageTotalInvitations',
                 'approvedToday',
+                'approved',
                 'percentageApproved',
+                'approvedRatioPercentage',
+                'pendingRatioPercentage',
+                'deniedRatioPercentage',
                 'pendingApproval',
                 'percentagePendingApproval',
                 'denied',
@@ -58,6 +62,103 @@
 
 <!-- Edit Visit Modal -->
 <div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Edit Visit Details</h3>
+                <form id="edit-form" class="space-y-6">
+                    @csrf
+                    <input type="hidden" name="visit_id" id="edit_visit_id">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="mb-6">
+                            <label for="edit_guest_name" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" name="guest_name" id="edit_guest_name" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="Enter guest's full name">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_guest_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" name="guest_email" id="edit_guest_email" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="guest@example.com">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_guest_phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" name="guest_phone" id="edit_guest_phone" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_organization" class="block text-sm font-medium text-gray-700 mb-2">Organization (Optional)</label>
+                            <input type="text" name="organization" id="edit_organization"
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="Company name">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_visit_date" class="block text-sm font-medium text-gray-700 mb-2">Visit Date *</label>
+                            <input type="date" name="visit_date" id="edit_visit_date" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
+                            <select name="floor" id="edit_floor" required
+                                    class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                <option value="">Select floor</option>
+                                <option value="ground">Ground Floor</option>
+                                <option value="mezzanine">Mezzanine</option>
+                                <option value="1st">Floor 1</option>
+                                <option value="2nd">Floor 2</option>
+                                <option value="3rd">Floor 3</option>
+                                <option value="4th">Floor 4</option>
+                                <option value="5th">Floor 5</option>
+                                <option value="6th">Floor 6</option>
+                                <option value="7th">Floor 7</option>
+                                <option value="8th">Floor 8</option>
+                                <option value="9th">Floor 9</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2 mb-6">
+                            <label for="edit_visit_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
+                            <textarea name="visit_reason" id="edit_visit_reason" rows="3" required
+                                      class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                      placeholder="Describe the purpose of the visit"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="submitEditForm()"
+                        class="px-4 py-3 rounded-xl text-white text-base font-medium transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer w-full inline-flex justify-center sm:ml-3 sm:w-auto">
+                    Save Changes
+                </button>
+                <button type="button" onclick="closeModal()"
+                        class="mt-3 w-full inline-flex justify-center px-4 py-3 rounded-xl text-base font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 active:translate-y-0 hover:-translate-y-px cursor-pointer sm:mt-0 sm:ml-3 sm:w-auto">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-4 right-4 hidden">
+    <div class="bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
+        <span id="toast-message"></span>
+        <button onclick="document.getElementById('toast').classList.add('hidden')" class="ml-4">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+@endsection
+
+
+
+<!-- Edit Visit Modal -->
+{{-- <div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -116,19 +217,7 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Toast Notification -->
-<div id="toast" class="fixed bottom-4 right-4 hidden">
-    <div class="bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
-        <span id="toast-message"></span>
-        <button onclick="document.getElementById('toast').classList.add('hidden')" class="ml-4">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-</div>
-@endsection
-
+</div> --}}
 
 
 {{-- <!DOCTYPE html>

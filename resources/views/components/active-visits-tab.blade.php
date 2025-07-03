@@ -72,10 +72,10 @@
 
                     <div class="ml-6 flex flex-col space-y-2">
                         @if($visit->status == 'pending')
-                            <button onclick="cancelVisit({{ $visit->id }})" class="inline-flex items-center px-3 py-1 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50">
+                            <button onclick="cancelVisit({{ $visit->id }})" class="inline-flex items-center justify-center px-3 py-1 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50">
                                 Cancel
                             </button>
-                            <button onclick="editVisit({{ $visit->id }})" class="inline-flex items-center px-3 py-1 border border-green-200 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
+                            <button onclick="editVisit({{ $visit->id }})" class="inline-flex items-center justify-center px-3 py-1 border border-green-200 text-sm font-medium rounded-md text-[#00aa8c] bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-100">
                                 Edit
                             </button>
                         @endif
@@ -115,25 +115,25 @@
                     Previous
                 </button>
             @else
-                <a href="{{ $activeVisits->previousPageUrl() }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                <a href="{{ $activeVisits->previousPageUrl() }}#active" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                     Previous
                 </a>
             @endif
 
             @foreach(range(1, $activeVisits->lastPage()) as $page)
                 @if($page == $activeVisits->currentPage())
-                    <button class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    <button class="px-3 py-2 text-sm text-white rounded-md bg-[#07AF8B] hover:bg-[#007570]">
                         {{ $page }}
                     </button>
                 @else
-                    <a href="{{ $activeVisits->url($page) }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                    <a href="{{ $activeVisits->url($page) }}#active" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                         {{ $page }}
                     </a>
                 @endif
             @endforeach
 
             @if($activeVisits->hasMorePages())
-                <a href="{{ $activeVisits->nextPageUrl() }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                <a href="{{ $activeVisits->nextPageUrl() }}#active" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                     Next
                 </a>
             @else
