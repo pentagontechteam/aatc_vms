@@ -18,128 +18,6 @@ class StaffDashboardController extends Controller
         $this->middleware('auth:staff');
     }
 
-    // public function index(Request $request)
-    // {
-    //     $staff = auth('staff')->user();
-    //     $staffId = $staff->id;
-
-    //     // Get date range for comparison (last 30 days vs previous 30 days)
-    //     $currentPeriodStart = Carbon::now()->subDays(30);
-    //     $previousPeriodStart = Carbon::now()->subDays(60);
-    //     $previousPeriodEnd = Carbon::now()->subDays(30);
-
-    //     // --- Dashboard Statistics ---
-
-    //     // Total Invitations (current staff's invitations in last 30 days)
-    //     $totalInvitations = Visit::where('staff_id', $staffId)
-    //         ->where('created_at', '>=', $currentPeriodStart)
-    //         ->count();
-
-    //     $previousTotalInvitations = Visit::where('staff_id', $staffId)
-    //         ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-    //         ->count();
-
-    //     $percentageTotalInvitations = $this->calculatePercentageChange($totalInvitations, $previousTotalInvitations);
-
-    //     // Pending Approval
-    //     $pendingApproval = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'pending')
-    //         ->count();
-
-    //     $previousPendingApproval = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'pending')
-    //         ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-    //         ->count();
-
-    //     $percentagePendingApproval = $this->calculatePercentageChange($pendingApproval, $previousPendingApproval);
-
-    //     // Approved Today
-    //     $approvedToday = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'approved')
-    //         ->whereDate('created_at', Carbon::today())
-    //         ->count();
-
-    //     $previousApprovedToday = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'approved')
-    //         ->whereDate('created_at', Carbon::yesterday())
-    //         ->count();
-
-    //     $percentageApproved = $this->calculatePercentageChange($approvedToday, $previousApprovedToday);
-
-    //     // Cancelled/Denied
-    //     $denied = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'rejected')
-    //         ->where('created_at', '>=', $currentPeriodStart)
-    //         ->count();
-
-    //     $previousDenied = Visit::where('staff_id', $staffId)
-    //         ->where('status', 'rejected')
-    //         ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-    //         ->count();
-
-    //     $percentageDenied = $this->calculatePercentageChange($denied, $previousDenied);
-
-    //     // Staff details
-    //     $fullName = $staff->name ?? '';
-    //     $staffEmail = $staff->email ?? '';
-    //     $staffId = $staff->id ?? '';
-
-    //     // --- Visit Lists ---
-
-    //     // Active Visits (with pagination)
-    //     $activeVisits = Visit::with(['visitor', 'staff'])
-    //         ->where('staff_id', $staffId)
-    //         ->whereIn('status', ['pending', 'approved'])
-    //         ->where('visit_date', '>=', Carbon::today())
-    //         ->orderBy('visit_date', 'asc')
-    //         ->orderBy('created_at', 'desc')
-    //         ->paginate(10, ['*'], 'active_page');
-
-    //     // Visit History (with pagination)
-    //     $visitHistory = Visit::with(['visitor', 'staff'])
-    //         ->where('staff_id', $staffId)
-    //         ->where(function($query) {
-    //             $query->where('visit_date', '<', Carbon::today())
-    //                   ->orWhere('status', 'rejected')
-    //                   ->orWhere('is_checked_out', true);
-    //         })
-    //         ->orderBy('visit_date', 'desc')
-    //         ->orderBy('created_at', 'desc')
-    //         ->paginate(10, ['*'], 'history_page');
-
-    //     // Floor options for the form
-    //     $floorOptions = [
-    //         'ground' => 'Ground Floor',
-    //         'mezzanine' => 'Mezzanine',
-    //         '1st' => 'Floor 1',
-    //         '2nd' => 'Floor 2',
-    //         '3rd' => 'Floor 3',
-    //         '4th' => 'Floor 4',
-    //         '5th' => 'Floor 5',
-    //         '6th' => 'Floor 6',
-    //         '7th' => 'Floor 7',
-    //         '8th' => 'Floor 8',
-    //         '9th' => 'Floor 9',
-    //     ];
-
-    //     return view('staff.dashboard', compact(
-    //         'totalInvitations',
-    //         'percentageTotalInvitations',
-    //         'pendingApproval',
-    //         'percentagePendingApproval',
-    //         'approvedToday',
-    //         'percentageApproved',
-    //         'denied',
-    //         'percentageDenied',
-    //         'fullName',
-    //         'staffEmail',
-    //         'staffId',
-    //         'activeVisits',
-    //         'visitHistory',
-    //         'floorOptions'
-    //     ));
-    // }
-
     public function index(Request $request)
 {
     $staff = auth('staff')->user();
@@ -361,8 +239,6 @@ class StaffDashboardController extends Controller
 
             $createdVisits[] = $visit;
 
-            // Here you would typically send an email to each visitor
-            // Mail::to($visitor->email)->send(new VisitorInvitation($visit));
         }
 
         DB::commit();
@@ -388,9 +264,6 @@ class StaffDashboardController extends Controller
     }
 }
 
-    /**
-     * Cancel visit invitation
-     */
     public function cancelVisit(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -417,9 +290,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Edit visit invitation
-     */
     public function editVisit(Request $request, Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -478,9 +348,6 @@ class StaffDashboardController extends Controller
         }
     }
 
-    /**
-     * Resubmit denied visit
-     */
     public function resubmitVisit(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -510,9 +377,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Resend invitation code
-     */
     public function resendCode(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -532,9 +396,6 @@ class StaffDashboardController extends Controller
         }
 
         try {
-            // Here you would typically resend the email
-            // Mail::to($visit->visitor->email)->send(new VisitorInvitation($visit));
-
             return response()->json([
                 'success' => true,
                 'message' => 'Invitation code resent successfully'
@@ -548,9 +409,6 @@ class StaffDashboardController extends Controller
         }
     }
 
-    /**
-     * Get visit details for editing
-     */
     public function getVisitDetails(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -567,9 +425,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Calculate percentage change between two values
-     */
     private function calculatePercentageChange($current, $previous)
     {
         if ($previous == 0) {

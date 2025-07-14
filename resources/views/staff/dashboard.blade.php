@@ -49,6 +49,35 @@
 
         <div class="p-6">
             <!-- Invite Guest Tab -->
+            <div id="invite-tab" class="tab-content">
+                <livewire:staff.invite-guest />
+            </div>
+
+            <!-- Active Visits Tab -->
+            <div id="active-tab" class="tab-content hidden">
+                <livewire:staff.active-visits />
+            </div>
+
+            <!-- Visit History Tab -->
+            <x-visit-history-tab :visitHistory="$visitHistory" />
+        </div>
+
+        {{-- <div class="border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
+                    Invite Guest
+                </button>
+                <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
+                    Active Visits
+                </button>
+                <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
+                    Visit History
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            <!-- Invite Guest Tab -->
             <x-invite-guest-tab />
 
             <!-- Active Visits Tab -->
@@ -56,7 +85,7 @@
 
             <!-- Visit History Tab -->
             <x-visit-history-tab :visitHistory="$visitHistory" />
-        </div>
+        </div> --}}
     </div>
 </main>
 
@@ -153,6 +182,12 @@
         </button>
     </div>
 </div>
+
+<script>
+    window.addEventListener('notify', event => {
+    alert(event.detail.message);
+});
+</script>
 @endsection
 
 
