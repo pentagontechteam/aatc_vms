@@ -25,6 +25,7 @@ use App\Http\Controllers\ModalController;
 use App\Http\Controllers\VisitorHistoryController;
 use App\Http\Controllers\PendingVisitsController;
 use App\Http\Controllers\StaffDashboardController;
+use App\Http\Controllers\EmailController;
 
 use App\Mail\VisitApprovedEmail;
 
@@ -153,7 +154,7 @@ Route::prefix('sm')->name('sm.')->group(function () {
     Route::post('/login', [SmController::class, 'login'])->name('login.submit');
     // Protected Dashboard Routes
     Route::middleware(['auth:sm'])->group(function () {
-        Route::get('/dashboard', [SmController::class, 'dashboard'])->name('dashboard');
+        // Route::get('/dashboard', [SmController::class, 'dashboard'])->name('dashboard');
         Route::post('/logout', [SmController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -189,7 +190,9 @@ Route::get('/test-email', function () {
     }
 
     // Send email to your email for testing
-    Mail::to('bobsonconnect@gmail.com')->send(new VisitApprovedEmail($visit));
+    Mail::to('bobsonconnect@gmail.com')->send(new VisitApprovedEmail($visit, "QR CODE SVG"));
 
     return 'Test email sent!';
 });
+
+// Route::post('/send-email', [EmailController::class, 'send'])->name('send.email');

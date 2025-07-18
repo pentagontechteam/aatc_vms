@@ -136,6 +136,41 @@
 
                                 @error('reasonType') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div> --}}
+
+                            <div class="mb-6">
+                                <label for="visit_date" class="block text-sm font-medium text-gray-700 mb-2">Visit Date *</label>
+                                <input type="date" wire:model="visit_date" id="visit_date" required
+                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                       min="{{ date('Y-m-d') }}">
+                                @error('visit_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="visit_time" class="block text-sm font-medium text-gray-700 mb-2">Visit Time *</label>
+                                <input type="time" wire:model="visit_time" id="visit_time" required
+                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                @error('visit_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="mb-6 sm:col-span-2">
+                                <label for="floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
+                                <select wire:model="floor_of_visit" id="floor" required
+                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                    <option value="">Select floor</option>
+                                    @foreach($floorOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('floor_of_visit') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                            {{-- <div class="mb-6 sm:col-span-2">
+                                <label for="visit_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
+                                <textarea wire:model="reason" id="visit_reason" rows="3" required
+                                          class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                          placeholder="Describe the purpose of the visit"></textarea>
+                                @error('reason') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div> --}}
+
                             <div class="mb-6 sm:col-span-2" wire:key="guest-{{ $currentGuestIndex }}">
                                 <label for="reason_type" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
 
@@ -164,40 +199,6 @@
                                 @error('reasonType')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
-                            </div>
-                            {{-- <div class="mb-6 sm:col-span-2">
-                                <label for="visit_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
-                                <textarea wire:model="reason" id="visit_reason" rows="3" required
-                                          class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
-                                          placeholder="Describe the purpose of the visit"></textarea>
-                                @error('reason') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div> --}}
-
-                            <div class="mb-6">
-                                <label for="visit_date" class="block text-sm font-medium text-gray-700 mb-2">Visit Date *</label>
-                                <input type="date" wire:model="visit_date" id="visit_date" required
-                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
-                                       min="{{ date('Y-m-d') }}">
-                                @error('visit_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div class="mb-6">
-                                <label for="visit_time" class="block text-sm font-medium text-gray-700 mb-2">Visit Time *</label>
-                                <input type="time" wire:model="visit_time" id="visit_time" required
-                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
-                                @error('visit_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div class="mb-6 sm:col-span-2">
-                                <label for="floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
-                                <select wire:model="floor_of_visit" id="floor" required
-                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
-                                    <option value="">Select floor</option>
-                                    @foreach($floorOptions as $value => $label)
-                                        <option value="{{ $value }}">{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('floor_of_visit') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
