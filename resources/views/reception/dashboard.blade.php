@@ -248,10 +248,10 @@
                                 </table>
 
                                 @if($approvedPendingCheckin->hasPages())
-<div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-    {{ $approvedPendingCheckin->appends(['search' => request('search')])->links() }}
-</div>
-@endif
+                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                        {{ $approvedPendingCheckin->appends(['search' => request('search')])->links() }}
+                                    </div>
+                                @endif
 
                             </div>
                         </div>
@@ -306,11 +306,11 @@
                                                 <button onclick="issueCard({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
                                                     <i class="fas fa-id-card mr-2"></i>Issue Pass
                                                 </button>
-                                                <button onclick="checkOutVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 border-red-200 text-red-600 hover:bg-red-50">
-                                                    Check Out
-                                                </button>
                                                 <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
                                                     Print Card
+                                                </button>
+                                                <button onclick="checkOutVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 border-red-200 text-red-600 hover:bg-red-50">
+                                                    Check Out
                                                 </button>
                                             </td>
                                         </tr>
@@ -323,10 +323,10 @@
                                 </table>
 
                                 @if($checkedInVisits->hasPages())
-<div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-    {{ $checkedInVisits->appends(['search' => request('search')])->links() }}
-</div>
-@endif
+                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                        {{ $checkedInVisits->appends(['search' => request('search')])->links() }}
+                                    </div>
+                                @endif
 
                             </div>
                         </div>
@@ -394,10 +394,10 @@
                                 </table>
 
                                 @if($checkedOutVisits->hasPages())
-<div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-    {{ $checkedOutVisits->appreesponds(['search' => request('search')])->links() }}
-</div>
-@endif
+                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                        {{ $checkedOutVisits->appreesponds(['search' => request('search')])->links() }}
+                                    </div>
+                                @endif
 
                             </div>
                         </div>
@@ -411,210 +411,97 @@
         // CSRF Token setup
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        // Tab functionality with search preservation
-// document.addEventListener('DOMContentLoaded', function() {
-//     // Get current tab from URL or default to first tab
-//     const urlParams = new URLSearchParams(window.location.search);
-//     const currentTab = urlParams.get('tab') || 'expected-today';
+        // Replace your existing search-related JavaScript with this
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tabs with current state
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentTab = urlParams.get('tab') || 'expected-today';
+            const searchInput = document.getElementById('searchInput');
 
-//     // Activate the current tab
-//     const tabButton = document.querySelector(`[data-tab="${currentTab}"]`);
-//     if (tabButton) {
-//         document.querySelectorAll('.tab-button').forEach(btn => {
-//             btn.classList.remove('active', 'text-gray-900', 'shadow-sm');
-//             btn.classList.add('text-gray-500');
-//             btn.removeAttribute('data-state');
-//         });
+            // Set current tab
+            document.getElementById('currentTab').value = currentTab;
 
-//         tabButton.classList.add('active', 'text-gray-900', 'shadow-sm');
-//         tabButton.classList.remove('text-gray-500');
-//         tabButton.setAttribute('data-state', 'active');
+            // Activate the current tab
+            activateTab(currentTab);
 
-//         document.querySelectorAll('.tab-content').forEach(content => {
-//             content.classList.add('hidden');
-//         });
+            // Tab click handler
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById('currentTab').value = tabId;
 
-//         document.getElementById(currentTab).classList.remove('hidden');
-//     }
+                    // Reset pagination for the new tab to page 1
+                    resetPaginationForTab(tabId);
 
-//     // Tab click handler
-//     document.querySelectorAll('.tab-button').forEach(button => {
-//         button.addEventListener('click', function() {
-//             const tabId = this.getAttribute('data-tab');
-//             document.getElementById('currentTab').value = tabId;
+                    // Submit the form
+                    document.getElementById('searchForm').submit();
+                });
+            });
 
-//             // Submit the form to preserve search and switch tab
-//             document.getElementById('searchForm').submit();
-//         });
-//     });
-// });
+            // Form submission handler
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
+                // If search input is empty, clear the search parameter
+                if (!searchInput.value.trim()) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('search');
+                    window.location.href = url.toString();
+                    e.preventDefault();
+                    return;
+                }
 
-// Search functionality
-// document.getElementById('searchForm').addEventListener('submit', function(e) {
-//     // Ensure we're on the first page when searching
-//     const url = new URL(window.location.href);
-//     url.searchParams.set('approved_page', '1');
-//     url.searchParams.set('checked_in_page', '1');
-//     url.searchParams.set('checked_out_page', '1');
-//     window.location.href = url.toString();
-//     e.preventDefault();
-// });
+                // Ensure we're on page 1 for all tabs when searching
+                resetAllPagination();
+            });
 
-// Replace your existing search-related JavaScript with this
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tabs with current state
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentTab = urlParams.get('tab') || 'expected-today';
-    const searchInput = document.getElementById('searchInput');
+            // Function to activate a tab
+            function activateTab(tabId) {
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active', 'text-gray-900', 'shadow-sm');
+                    btn.classList.add('text-gray-500');
+                    btn.removeAttribute('data-state');
+                });
 
-    // Set current tab
-    document.getElementById('currentTab').value = currentTab;
+                const tabButton = document.querySelector(`[data-tab="${tabId}"]`);
+                if (tabButton) {
+                    tabButton.classList.add('active', 'text-gray-900', 'shadow-sm');
+                    tabButton.classList.remove('text-gray-500');
+                    tabButton.setAttribute('data-state', 'active');
+                }
 
-    // Activate the current tab
-    activateTab(currentTab);
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
 
-    // Tab click handler
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const tabId = this.getAttribute('data-tab');
-            document.getElementById('currentTab').value = tabId;
+                const tabContent = document.getElementById(tabId);
+                if (tabContent) {
+                    tabContent.classList.remove('hidden');
+                }
+            }
 
-            // Reset pagination for the new tab to page 1
-            resetPaginationForTab(tabId);
+            // Function to reset pagination for a specific tab
+            function resetPaginationForTab(tabId) {
+                switch(tabId) {
+                    case 'expected-today':
+                        document.querySelector('input[name="approved_page"]').value = 1;
+                        break;
+                    case 'checked-in':
+                        document.querySelector('input[name="checked_in_page"]').value = 1;
+                        break;
+                    case 'checked-out':
+                        document.querySelector('input[name="checked_out_page"]').value = 1;
+                        break;
+                }
+            }
 
-            // Submit the form
-            document.getElementById('searchForm').submit();
-        });
-    });
-
-    // Form submission handler
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-        // If search input is empty, clear the search parameter
-        if (!searchInput.value.trim()) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('search');
-            window.location.href = url.toString();
-            e.preventDefault();
-            return;
-        }
-
-        // Ensure we're on page 1 for all tabs when searching
-        resetAllPagination();
-    });
-
-    // Function to activate a tab
-    function activateTab(tabId) {
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.classList.remove('active', 'text-gray-900', 'shadow-sm');
-            btn.classList.add('text-gray-500');
-            btn.removeAttribute('data-state');
-        });
-
-        const tabButton = document.querySelector(`[data-tab="${tabId}"]`);
-        if (tabButton) {
-            tabButton.classList.add('active', 'text-gray-900', 'shadow-sm');
-            tabButton.classList.remove('text-gray-500');
-            tabButton.setAttribute('data-state', 'active');
-        }
-
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.add('hidden');
-        });
-
-        const tabContent = document.getElementById(tabId);
-        if (tabContent) {
-            tabContent.classList.remove('hidden');
-        }
-    }
-
-    // Function to reset pagination for a specific tab
-    function resetPaginationForTab(tabId) {
-        switch(tabId) {
-            case 'expected-today':
+            // Function to reset all pagination to page 1
+            function resetAllPagination() {
                 document.querySelector('input[name="approved_page"]').value = 1;
-                break;
-            case 'checked-in':
                 document.querySelector('input[name="checked_in_page"]').value = 1;
-                break;
-            case 'checked-out':
                 document.querySelector('input[name="checked_out_page"]').value = 1;
-                break;
-        }
-    }
+            }
+        });
 
-    // Function to reset all pagination to page 1
-    function resetAllPagination() {
-        document.querySelector('input[name="approved_page"]').value = 1;
-        document.querySelector('input[name="checked_in_page"]').value = 1;
-        document.querySelector('input[name="checked_out_page"]').value = 1;
-    }
-});
-
-        // Tab functionality
-// document.addEventListener('DOMContentLoaded', function() {
-//     // Initialize first tab as active
-//     const defaultTab = document.querySelector('[data-tab="expected-today"]');
-//     if (defaultTab) {
-//         defaultTab.classList.add('active');
-//         defaultTab.setAttribute('data-state', 'active');
-//         document.getElementById('expected-today').classList.remove('hidden');
-//     }
-
-//     // Tab click handler
-//     document.querySelectorAll('.tab-button').forEach(button => {
-//         button.addEventListener('click', function() {
-//             const tabId = this.getAttribute('data-tab');
-
-//             // Update all buttons
-//             document.querySelectorAll('.tab-button').forEach(btn => {
-//                 btn.classList.remove('active', 'text-gray-900', 'shadow-sm');
-//                 btn.classList.add('text-gray-500');
-//                 btn.removeAttribute('data-state');
-//             });
-
-//             // Update clicked button
-//             this.classList.add('active', 'text-gray-900', 'shadow-sm');
-//             this.classList.remove('text-gray-500');
-//             this.setAttribute('data-state', 'active');
-
-//             // Update all content
-//             document.querySelectorAll('.tab-content').forEach(content => {
-//                 content.classList.add('hidden');
-//             });
-
-//             // Show selected content
-//             document.querySelector(`.${tabId}`).classList.remove('hidden');
-//             document.getElementById(tabId).classList.remove('hidden');
-//         });
-//     });
-// });
-
-
-//         // Search functionality
-//         let searchTimeout;
-//         document.getElementById('searchInput').addEventListener('input', function() {
-//             clearTimeout(searchTimeout);
-//             const query = this.value;
-
-//             searchTimeout = setTimeout(() => {
-//                 if (query.length >= 2) {
-//                     fetch(`{{ route('reception.search') }}?q=${encodeURIComponent(query)}`, {
-//                         headers: {
-//                             'X-CSRF-TOKEN': csrfToken
-//                         }
-//                     })
-//                     .then(response => response.json())
-//                     .then(data => {
-//                         console.log('Search results:', data);
-//                         // Implement search results display here
-//                     })
-//                     .catch(error => {
-//                         console.error('Search error:', error);
-//                     });
-//                 }
-//             }, 300);
-//         });
 
         // Check in visitor
         function checkInVisitor(visitId) {

@@ -28,6 +28,7 @@ use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ReceptionGuestController;
 use App\Http\Controllers\ReceptionHistoryController;
+use App\Http\Controllers\ReceptionInviteController;
 
 use App\Mail\VisitApprovedEmail;
 
@@ -99,8 +100,8 @@ Route::prefix('reception')->name('reception.')->group(function () {
     Route::post('/check-in/{visit}', [ReceptionDashboardController::class, 'checkIn'])->name('checkin');
     Route::post('/check-out/{visit}', [ReceptionDashboardController::class, 'checkOut'])->name('checkout');
 
-    Route::post('/visits/invite', [StaffDashboardController::class, 'sendInvitation'])->name('dashboard.invite');
-    Route::get('/visits/{visit}/details', [StaffDashboardController::class, 'getVisitDetails'])->name('visits.details');
+    Route::post('/visits/invite', [ReceptionInviteController::class, 'sendInvitation'])->name('dashboard.invite');
+    Route::get('/visits/{visit}/details', [ReceptionInviteController::class, 'getVisitDetails'])->name('visits.details');
     Route::get('/visits/{visit}', [ReceptionGuestController::class, 'show'])->name('visits.show');
     Route::post('/visitor-history/export', [ReceptionHistoryController::class, 'export'])->name('history.export');
     // Route::get('/visitor-history/export', [VisitorHistoryController::class, 'export'])->name('visitor-history.export.get');
