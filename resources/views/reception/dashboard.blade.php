@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,10 +39,11 @@
     </script>
     <style>
         .tab-content {
-    transition: opacity 1s ease;
-}
+            transition: opacity 1s ease;
+        }
     </style>
 </head>
+
 <body class="bg-gray-50 w-full">
     <!-- Header -->
     <header class="bg-white text-gray-900 shadow-lg sticky top-0 z-50">
@@ -79,20 +81,20 @@
         <!-- Search and Register Section - Stacked on mobile -->
         <div class="flex flex-col sm:flex-row gap-4 mb-6 justify-between">
             <div class="flex-1 w-full max-w-2xl">
-            <form method="GET" action="{{ route('reception.dashboard') }}" class="relative" id="searchForm">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
-                </div>
-                <input id="searchInput" type="text" name="search"
-                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#d3f2ee] focus:bg-white transition-colors duration-200"
-                    placeholder="Search visitors"
-                    value="{{ request('search') }}">
-                <input type="hidden" name="tab" id="currentTab" value="{{ request('tab', 'expected-today') }}">
-                <!-- Add hidden fields to preserve pagination -->
-                <input type="hidden" name="approved_page" value="{{ request('approved_page', 1) }}">
-                <input type="hidden" name="checked_in_page" value="{{ request('checked_in_page', 1) }}">
-                <input type="hidden" name="checked_out_page" value="{{ request('checked_out_page', 1) }}">
-            </form>
+                <form method="GET" action="{{ route('reception.dashboard') }}" class="relative" id="searchForm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input id="searchInput" type="text" name="search"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#d3f2ee] focus:bg-white transition-colors duration-200"
+                        placeholder="Search visitors"
+                        value="{{ request('search') }}">
+                    <input type="hidden" name="tab" id="currentTab" value="{{ request('tab', 'expected-today') }}">
+                    <!-- Add hidden fields to preserve pagination -->
+                    <input type="hidden" name="approved_page" value="{{ request('approved_page', 1) }}">
+                    <input type="hidden" name="checked_in_page" value="{{ request('checked_in_page', 1) }}">
+                    <input type="hidden" name="checked_out_page" value="{{ request('checked_out_page', 1) }}">
+                </form>
             </div>
             <a href="{{ route('reception.dashboard.guests') }}" class="bg-primary hover:bg-teal-700 text-white px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center justify-center text-base">
                 <i class="fas fa-user-plus mr-2 text-base"></i>
@@ -228,9 +230,9 @@
                                 </table>
 
                                 @if($approvedPendingCheckin->hasPages())
-                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-                                        {{ $approvedPendingCheckin->appends(['search' => request('search')])->links() }}
-                                    </div>
+                                <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                    {{ $approvedPendingCheckin->appends(['search' => request('search')])->links() }}
+                                </div>
                                 @endif
 
                             </div>
@@ -298,9 +300,9 @@
                                 </table>
 
                                 @if($checkedInVisits->hasPages())
-                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-                                        {{ $checkedInVisits->appends(['search' => request('search')])->links() }}
-                                    </div>
+                                <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                    {{ $checkedInVisits->appends(['search' => request('search')])->links() }}
+                                </div>
                                 @endif
 
                             </div>
@@ -365,9 +367,9 @@
                                 </table>
 
                                 @if($checkedOutVisits->hasPages())
-                                    <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
-                                        {{ $checkedOutVisits->appreesponds(['search' => request('search')])->links() }}
-                                    </div>
+                                <div class="px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+                                    {{ $checkedOutVisits->appreesponds(['search' => request('search')])->links() }}
+                                </div>
                                 @endif
 
                             </div>
@@ -461,52 +463,52 @@
                     <div id="access-card-template" class="border-2 border-gray-200 rounded-lg p-4 bg-white shadow-md w-full max-w-xs mx-auto">
                         <div class="flex justify-between items-center mb-4">
                             <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="Company Logo" class="h-10">
-                            <div class="text-xs text-gray-500">ACCESS CARD</div>
-                        </div>
+    <div class="text-xs text-gray-500">ACCESS CARD</div>
+    </div>
 
-                        <div class="text-center mb-4">
-                            <div class="w-24 h-24 mx-auto bg-gray-200 rounded-full overflow-hidden mb-2">
-                                <!-- Visitor photo placeholder -->
-                                <div id="visitor-photo-placeholder" class="w-full h-full flex items-center justify-center text-gray-400">
-                                    <i class="fas fa-user text-4xl"></i>
-                                </div>
-                            </div>
-                            <h3 id="card-visitor-name" class="text-lg font-semibold"></h3>
-                            <p id="card-visitor-company" class="text-sm text-gray-600"></p>
-                        </div>
-
-                        <div class="border-t border-gray-200 pt-3">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="text-gray-500">Host:</span>
-                                <span id="card-host-name" class="font-medium"></span>
-                            </div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="text-gray-500">Valid Until:</span>
-                                <span id="card-valid-until" class="font-medium"></span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-500">Card No:</span>
-                                <span id="card-serial-number" class="font-medium"></span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 text-center text-xs text-gray-400">
-                            This card remains property of {{ config('app.name') }}
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="printAccessCard()"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
-                        <i class="fas fa-print mr-2"></i> Print Card
-                    </button>
-                    <button type="button" onclick="closeAccessCardModal()"
-                            class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancel
-                    </button>
-                </div>
+    <div class="text-center mb-4">
+        <div class="w-24 h-24 mx-auto bg-gray-200 rounded-full overflow-hidden mb-2">
+            <!-- Visitor photo placeholder -->
+            <div id="visitor-photo-placeholder" class="w-full h-full flex items-center justify-center text-gray-400">
+                <i class="fas fa-user text-4xl"></i>
             </div>
         </div>
+        <h3 id="card-visitor-name" class="text-lg font-semibold"></h3>
+        <p id="card-visitor-company" class="text-sm text-gray-600"></p>
+    </div>
+
+    <div class="border-t border-gray-200 pt-3">
+        <div class="flex justify-between text-sm mb-1">
+            <span class="text-gray-500">Host:</span>
+            <span id="card-host-name" class="font-medium"></span>
+        </div>
+        <div class="flex justify-between text-sm mb-1">
+            <span class="text-gray-500">Valid Until:</span>
+            <span id="card-valid-until" class="font-medium"></span>
+        </div>
+        <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Card No:</span>
+            <span id="card-serial-number" class="font-medium"></span>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center text-xs text-gray-400">
+        This card remains property of {{ config('app.name') }}
+    </div>
+    </div>
+    </div>
+    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" onclick="printAccessCard()"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+            <i class="fas fa-print mr-2"></i> Print Card
+        </button>
+        <button type="button" onclick="closeAccessCardModal()"
+            class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+            Cancel
+        </button>
+    </div>
+    </div>
+    </div>
     </div> --}}
 
     <div id="checkout-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
@@ -531,11 +533,11 @@
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="button" onclick="processCheckout()"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
                         Confirm Checkout
                     </button>
                     <button type="button" onclick="closeCheckoutModal()"
-                            class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancel
                     </button>
                 </div>
@@ -570,15 +572,15 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Card Type</label>
                         <div class="grid grid-cols-2 gap-3">
                             <button type="button" onclick="selectCardType('visitor_pass')"
-                                    class="card-type-btn p-3 border-2 border-gray-200 rounded-lg hover:border-primary text-center transition-colors"
-                                    data-type="visitor_pass">
+                                class="card-type-btn p-3 border-2 border-gray-200 rounded-lg hover:border-primary text-center transition-colors"
+                                data-type="visitor_pass">
                                 <i class="fas fa-id-badge text-2xl text-gray-400 mb-2"></i>
                                 <p class="font-medium">Visitor Pass</p>
                                 <p class="text-xs text-gray-500">Reusable pass</p>
                             </button>
                             <button type="button" onclick="selectCardType('access_card')"
-                                    class="card-type-btn p-3 border-2 border-gray-200 rounded-lg hover:border-primary text-center transition-colors"
-                                    data-type="access_card">
+                                class="card-type-btn p-3 border-2 border-gray-200 rounded-lg hover:border-primary text-center transition-colors"
+                                data-type="access_card">
                                 <i class="fas fa-id-card text-2xl text-gray-400 mb-2"></i>
                                 <p class="font-medium">Access Card</p>
                                 <p class="text-xs text-gray-500">Personal card</p>
@@ -649,11 +651,11 @@
 
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button id="issue-card-btn" type="button" onclick="issueSelectedCard()"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
                         Issue Card
                     </button>
                     <button type="button" onclick="closeIssueCardModal()"
-                            class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full inline-flex justify-center px-4 py-2 rounded-md border border-gray-300 shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancel
                     </button>
                 </div>
@@ -686,24 +688,24 @@
                     <div id="card-preview" class="hidden">
                         <div class="mb-6">
                             <div class="min-w-full inline-flex h-10 items-center justify-center bg-gray-100 px-1 py-2 text-gray-500 w-full max-w-xs mx-auto">
-                              <div class="grid grid-cols-2 w-full">
-                                <!-- Front Side -->
-                                <button onclick="showCardSide('front')" id="front-btn"
+                                <div class="grid grid-cols-2 w-full">
+                                    <!-- Front Side -->
+                                    <button onclick="showCardSide('front')" id="front-btn"
                                         class="side-btn inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all
                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
                                         data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm relative active"
                                         data-state="active">
-                                  Front
-                                </button>
+                                        Front
+                                    </button>
 
-                                <!-- Back Side -->
-                                <button onclick="showCardSide('back')" id="back-btn"
+                                    <!-- Back Side -->
+                                    <button onclick="showCardSide('back')" id="back-btn"
                                         class="side-btn inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all
                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
                                         data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm">
-                                  Back
-                                </button>
-                              </div>
+                                        Back
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -714,7 +716,7 @@
 
                         <!-- Back Side -->
                         <div id="card-back" class="card-side hidden">
-                            @include('partials.visitor-pass.back')
+                            @include('partials.visitor-pass.back-preview')
                         </div>
                     </div>
                 </div>
@@ -813,7 +815,7 @@
 
             // Function to reset pagination for a specific tab
             function resetPaginationForTab(tabId) {
-                switch(tabId) {
+                switch (tabId) {
                     case 'expected-today':
                         document.querySelector('input[name="approved_page"]').value = 1;
                         break;
@@ -842,214 +844,214 @@
         //     fetchPassDetails(visitId);
         // }
 
-//         function openPassModal() {
-//             document.getElementById('pass-modal').classList.remove('hidden');
-//         }
+        //         function openPassModal() {
+        //             document.getElementById('pass-modal').classList.remove('hidden');
+        //         }
 
-//         function closePassModal() {
-//             document.getElementById('pass-modal').classList.add('hidden');
-//         }
+        //         function closePassModal() {
+        //             document.getElementById('pass-modal').classList.add('hidden');
+        //         }
 
-//         function fetchPassDetails(visitId) {
-//             fetch(`/reception/visits/${visitId}/pass-details`, {
-//                 method: 'GET',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'X-CSRF-TOKEN': csrfToken
-//                 }
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     // Populate visitor info
-//                     // document.getElementById('visitor-name').textContent = data.visitor.name;
-//                     // document.getElementById('host-name').textContent = data.staff.name;
+        //         function fetchPassDetails(visitId) {
+        //             fetch(`/reception/visits/${visitId}/pass-details`, {
+        //                 method: 'GET',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': csrfToken
+        //                 }
+        //             })
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (data.success) {
+        //                     // Populate visitor info
+        //                     // document.getElementById('visitor-name').textContent = data.visitor.name;
+        //                     // document.getElementById('host-name').textContent = data.staff.name;
 
-//                     // Populate pass dropdown
-//                     const passSelect = document.getElementById('pass-number');
-//                     passSelect.innerHTML = '';
+        //                     // Populate pass dropdown
+        //                     const passSelect = document.getElementById('pass-number');
+        //                     passSelect.innerHTML = '';
 
-//                     if (data.availablePasses.length > 0) {
-//                         data.availablePasses.forEach(pass => {
-//                             const option = document.createElement('option');
-//                             option.value = pass.id;
-//                             option.textContent = pass.serial_number;
-//                             passSelect.appendChild(option);
-//                         });
+        //                     if (data.availablePasses.length > 0) {
+        //                         data.availablePasses.forEach(pass => {
+        //                             const option = document.createElement('option');
+        //                             option.value = pass.id;
+        //                             option.textContent = pass.serial_number;
+        //                             passSelect.appendChild(option);
+        //                         });
 
-//                         // document.getElementById('no-passes-available').classList.add('hidden');
-//                         // document.getElementById('pass-selection').classList.remove('hidden');
-//                     } else {
-//                         // document.getElementById('no-passes-available').classList.remove('hidden');
-//                         // document.getElementById('pass-selection').classList.add('hidden');
-//                     }
-//                 } else {
-//                     alert(data.error || 'Failed to fetch pass details');
-//                     closePassModal();
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Error:', error);
-//                 alert('Error fetching pass details');
-//                 closePassModal();
-//             });
-//         }
+        //                         // document.getElementById('no-passes-available').classList.add('hidden');
+        //                         // document.getElementById('pass-selection').classList.remove('hidden');
+        //                     } else {
+        //                         // document.getElementById('no-passes-available').classList.remove('hidden');
+        //                         // document.getElementById('pass-selection').classList.add('hidden');
+        //                     }
+        //                 } else {
+        //                     alert(data.error || 'Failed to fetch pass details');
+        //                     closePassModal();
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error:', error);
+        //                 alert('Error fetching pass details');
+        //                 closePassModal();
+        //             });
+        //         }
 
-//         function issueVisitorPass() {
-//             const passId = document.getElementById('pass-number').value;
+        //         function issueVisitorPass() {
+        //             const passId = document.getElementById('pass-number').value;
 
-//             if (!passId) {
-//                 alert('Please select a pass');
-//                 return;
-//             }
+        //             if (!passId) {
+        //                 alert('Please select a pass');
+        //                 return;
+        //             }
 
-//             fetch(`/reception/visits/${currentVisitId}/issue-pass`, {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'X-CSRF-TOKEN': csrfToken
-//                 },
-//                 body: JSON.stringify({
-//                     pass_id: passId,
-//                 })
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     alert('Visitor pass issued successfully');
-//                     closePassModal();
-//                     location.reload();
-//                 } else {
-//                     alert(data.error || 'Failed to issue visitor pass');
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Error:', error);
-//                 alert('Error issuing visitor pass');
-//             });
-//         }
+        //             fetch(`/reception/visits/${currentVisitId}/issue-pass`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': csrfToken
+        //                 },
+        //                 body: JSON.stringify({
+        //                     pass_id: passId,
+        //                 })
+        //             })
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (data.success) {
+        //                     alert('Visitor pass issued successfully');
+        //                     closePassModal();
+        //                     location.reload();
+        //                 } else {
+        //                     alert(data.error || 'Failed to issue visitor pass');
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error:', error);
+        //                 alert('Error issuing visitor pass');
+        //             });
+        //         }
 
-//         function generateNewPass() {
-//     const floor = document.getElementById('floor').value;
+        //         function generateNewPass() {
+        //     const floor = document.getElementById('floor').value;
 
-//     if (!floor) {
-//         alert('Please select a floor before generating a pass');
-//         return;
-//     }
+        //     if (!floor) {
+        //         alert('Please select a floor before generating a pass');
+        //         return;
+        //     }
 
-//     fetch('/reception/visitor-passes/generate', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'X-CSRF-TOKEN': csrfToken
-//         },
-//         body: JSON.stringify({ floor })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             alert('New pass generated successfully');
-//             fetchPassDetails(currentVisitId);
-//         } else {
-//             alert(data.error || 'Failed to generate new pass');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         alert('Error generating new pass');
-//     });
-// }
+        //     fetch('/reception/visitor-passes/generate', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': csrfToken
+        //         },
+        //         body: JSON.stringify({ floor })
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             alert('New pass generated successfully');
+        //             fetchPassDetails(currentVisitId);
+        //         } else {
+        //             alert(data.error || 'Failed to generate new pass');
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //         alert('Error generating new pass');
+        //     });
+        // }
 
 
-//         function printPass(visitId) {
-//             window.open(`/reception/visits/${visitId}/print-pass`, '_blank');
-//         }
+        //         function printPass(visitId) {
+        //             window.open(`/reception/visits/${visitId}/print-pass`, '_blank');
+        //         }
 
-//         // access card functions
-//         let currentAccessCardVisitId = null;
+        //         // access card functions
+        //         let currentAccessCardVisitId = null;
 
-//         function openAccessCardModal(visitId) {
-//             currentAccessCardVisitId = visitId;
-//             fetchAccessCardDetails(visitId);
-//             document.getElementById('access-card-modal').classList.remove('hidden');
-//         }
+        //         function openAccessCardModal(visitId) {
+        //             currentAccessCardVisitId = visitId;
+        //             fetchAccessCardDetails(visitId);
+        //             document.getElementById('access-card-modal').classList.remove('hidden');
+        //         }
 
-//         function closeAccessCardModal() {
-//             document.getElementById('access-card-modal').classList.add('hidden');
-//         }
+        //         function closeAccessCardModal() {
+        //             document.getElementById('access-card-modal').classList.add('hidden');
+        //         }
 
-//         function fetchAccessCardDetails(visitId) {
-//             fetch(`/reception/visits/${visitId}/access-card-details`, {
-//                 method: 'GET',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'X-CSRF-TOKEN': csrfToken
-//                 }
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     // Populate card details
-//                     document.getElementById('card-visitor-name').textContent = data.visitor.name;
-//                     document.getElementById('card-visitor-company').textContent = data.visitor.organization || 'Visitor';
-//                     document.getElementById('card-host-name').textContent = data.staff.name;
-//                     document.getElementById('card-serial-number').textContent = data.accessCard.serial_number;
+        //         function fetchAccessCardDetails(visitId) {
+        //             fetch(`/reception/visits/${visitId}/access-card-details`, {
+        //                 method: 'GET',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': csrfToken
+        //                 }
+        //             })
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (data.success) {
+        //                     // Populate card details
+        //                     document.getElementById('card-visitor-name').textContent = data.visitor.name;
+        //                     document.getElementById('card-visitor-company').textContent = data.visitor.organization || 'Visitor';
+        //                     document.getElementById('card-host-name').textContent = data.staff.name;
+        //                     document.getElementById('card-serial-number').textContent = data.accessCard.serial_number;
 
-//                     // Format valid until date
-//                     const validUntil = new Date(data.accessCard.valid_until);
-//                     document.getElementById('card-valid-until').textContent =
-//                         validUntil.toLocaleDateString() + ' ' + validUntil.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        //                     // Format valid until date
+        //                     const validUntil = new Date(data.accessCard.valid_until);
+        //                     document.getElementById('card-valid-until').textContent =
+        //                         validUntil.toLocaleDateString() + ' ' + validUntil.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-//                     // Set visitor photo if available
-//                     if (data.visitor.photo_url) {
-//                         document.getElementById('visitor-photo-placeholder').innerHTML =
-//                             `<img src="${data.visitor.photo_url}" alt="Visitor Photo" class="w-full h-full object-cover">`;
-//                     }
-//                 } else {
-//                     alert(data.error || 'Failed to fetch access card details');
-//                     closeAccessCardModal();
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Error:', error);
-//                 alert('Error fetching access card details');
-//                 closeAccessCardModal();
-//             });
-//         }
+        //                     // Set visitor photo if available
+        //                     if (data.visitor.photo_url) {
+        //                         document.getElementById('visitor-photo-placeholder').innerHTML =
+        //                             `<img src="${data.visitor.photo_url}" alt="Visitor Photo" class="w-full h-full object-cover">`;
+        //                     }
+        //                 } else {
+        //                     alert(data.error || 'Failed to fetch access card details');
+        //                     closeAccessCardModal();
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error:', error);
+        //                 alert('Error fetching access card details');
+        //                 closeAccessCardModal();
+        //             });
+        //         }
 
-//         function printAccessCard() {
-//             // First issue the card (if not already issued)
-//             issueAccessCard(currentAccessCardVisitId)
-//                 .then(() => {
-//                     // Then open print view
-//                     window.open(`/reception/visits/${currentAccessCardVisitId}/print-access-card`, '_blank');
-//                     closeAccessCardModal();
-//                 })
-//                 .catch(error => {
-//                     console.error('Error:', error);
-//                     alert('Error issuing access card');
-//                 });
-//         }
+        //         function printAccessCard() {
+        //             // First issue the card (if not already issued)
+        //             issueAccessCard(currentAccessCardVisitId)
+        //                 .then(() => {
+        //                     // Then open print view
+        //                     window.open(`/reception/visits/${currentAccessCardVisitId}/print-access-card`, '_blank');
+        //                     closeAccessCardModal();
+        //                 })
+        //                 .catch(error => {
+        //                     console.error('Error:', error);
+        //                     alert('Error issuing access card');
+        //                 });
+        //         }
 
-//         function issueAccessCard(visitId) {
-//             return fetch(`/reception/visits/${visitId}/issue-access-card`, {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'X-CSRF-TOKEN': csrfToken
-//                 }
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (!data.success) {
-//                     throw new Error(data.error || 'Failed to issue access card');
-//                 }
-//                 return data;
-//             });
-//         }
+        //         function issueAccessCard(visitId) {
+        //             return fetch(`/reception/visits/${visitId}/issue-access-card`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': csrfToken
+        //                 }
+        //             })
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (!data.success) {
+        //                     throw new Error(data.error || 'Failed to issue access card');
+        //                 }
+        //                 return data;
+        //             });
+        //         }
 
-//         // Check-out functions
-//         let currentCheckoutVisitId = null;
+        //         // Check-out functions
+        //         let currentCheckoutVisitId = null;
 
         function openCheckoutModal(visitId) {
             currentCheckoutVisitId = visitId;
@@ -1063,62 +1065,62 @@
 
         function fetchCheckoutDetails(visitId) {
             fetch(`/reception/visits/${visitId}/checkout-details`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show card info if visitor has an access card
-                    if (data.hasAccessCard) {
-                        document.getElementById('checkout-card-info').classList.remove('hidden');
-                        document.getElementById('checkout-card-number').textContent =
-                            data.accessCard.serial_number + ' (' + data.accessCard.access_level + ')';
-                    } else {
-                        document.getElementById('checkout-card-info').classList.add('hidden');
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     }
-                } else {
-                    alert(data.error || 'Failed to fetch checkout details');
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show card info if visitor has an access card
+                        if (data.hasAccessCard) {
+                            document.getElementById('checkout-card-info').classList.remove('hidden');
+                            document.getElementById('checkout-card-number').textContent =
+                                data.accessCard.serial_number + ' (' + data.accessCard.access_level + ')';
+                        } else {
+                            document.getElementById('checkout-card-info').classList.add('hidden');
+                        }
+                    } else {
+                        alert(data.error || 'Failed to fetch checkout details');
+                        closeCheckoutModal();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching checkout details');
                     closeCheckoutModal();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error fetching checkout details');
-                closeCheckoutModal();
-            });
+                });
         }
 
         function processCheckout() {
             const notes = document.getElementById('checkout-notes').value;
 
             fetch(`/reception/visits/${currentCheckoutVisitId}/checkout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    notes: notes
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        notes: notes
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Visitor checked out successfully');
-                    closeCheckoutModal();
-                    location.reload();
-                } else {
-                    alert(data.error || 'Failed to checkout visitor');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error checking out visitor');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Visitor checked out successfully');
+                        closeCheckoutModal();
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Failed to checkout visitor');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error checking out visitor');
+                });
         }
     </script>
 
@@ -1165,81 +1167,99 @@
 
         function fetchCardDetails(visitId) {
             fetch(`/reception/visits/${visitId}/card-details`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Handle current card status
-                    if (data.hasCard) {
-                        document.getElementById('current-card-status').classList.remove('hidden');
-                        document.getElementById('current-card-info').textContent =
-                            `${data.currentCard.serial_number} (${data.cardType === 'visitor_pass' ? 'Visitor Pass' : 'Access Card'})`;
-                    } else {
-                        document.getElementById('current-card-status').classList.add('hidden');
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Handle current card status
+                        if (data.hasCard) {
+                            document.getElementById('current-card-status').classList.remove('hidden');
+                            document.getElementById('current-card-info').textContent =
+                                `${data.currentCard.serial_number} (${data.cardType === 'visitor_pass' ? 'Visitor Pass' : 'Access Card'})`;
+                        } else {
+                            document.getElementById('current-card-status').classList.add('hidden');
+                        }
 
-                    // Populate available passes
-                    const passSelect = document.getElementById('pass-select');
-                    passSelect.innerHTML = '<option value="">Choose a pass...</option>';
-                    data.availablePasses.forEach(pass => {
-                        const option = document.createElement('option');
-                        option.value = pass.id;
-                        option.textContent = pass.serial_number;
-                        passSelect.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error fetching card details');
-            });
+                        // Populate available passes
+                        const passSelect = document.getElementById('pass-select');
+                        passSelect.innerHTML = '<option value="">Choose a pass...</option>';
+                        data.availablePasses.forEach(pass => {
+                            const option = document.createElement('option');
+                            option.value = pass.id;
+                            option.textContent = pass.serial_number;
+                            passSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching card details');
+                });
         }
 
         function fetchPrintDetails(visitId) {
             fetch(`/reception/visits/${visitId}/print-details`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show card preview
-                    document.getElementById('no-card-message').classList.add('hidden');
-                    document.getElementById('card-preview').classList.remove('hidden');
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show card preview
+                        document.getElementById('no-card-message').classList.add('hidden');
+                        document.getElementById('card-preview').classList.remove('hidden');
 
-                    populateCardPreview(data);
-                } else {
-                    document.getElementById('no-card-message').classList.remove('hidden');
-                    document.getElementById('card-preview').classList.add('hidden');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error fetching print details');
-            });
+                        populateCardPreview(data);
+                    } else {
+                        document.getElementById('no-card-message').classList.remove('hidden');
+                        document.getElementById('card-preview').classList.add('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching print details');
+                });
         }
 
         function formatDuration(startDate, endDate) {
             const totalSeconds = Math.floor((endDate - startDate) / 1000);
             if (totalSeconds <= 0) return 'Expired';
 
-            const units = [
-                { label: 'month', seconds: 30 * 24 * 60 * 60 },
-                { label: 'week', seconds: 7 * 24 * 60 * 60 },
-                { label: 'day', seconds: 24 * 60 * 60 },
-                { label: 'hour', seconds: 60 * 60 },
-                { label: 'minute', seconds: 60 },
+            const units = [{
+                    label: 'month',
+                    seconds: 30 * 24 * 60 * 60
+                },
+                {
+                    label: 'week',
+                    seconds: 7 * 24 * 60 * 60
+                },
+                {
+                    label: 'day',
+                    seconds: 24 * 60 * 60
+                },
+                {
+                    label: 'hour',
+                    seconds: 60 * 60
+                },
+                {
+                    label: 'minute',
+                    seconds: 60
+                },
             ];
 
-            for (const { label, seconds } of units) {
+            for (const {
+                    label,
+                    seconds
+                }
+                of units) {
                 const value = Math.floor(totalSeconds / seconds);
                 if (value > 0) {
                     return `${value} ${label}${value > 1 ? 's' : ''}`;
@@ -1252,14 +1272,14 @@
 
         function loadCardTemplate(side = 'front', type = 'pass') {
 
-            if (type === 'access'){
+            if (type === 'access') {
                 return fetch(`/templates/${type}.html`)
-                .then(res => res.text())
-                .then(html => {
-                    const templateWrapper = document.createElement('div');
-                    templateWrapper.innerHTML = html;
-                    return templateWrapper.firstElementChild;
-                });
+                    .then(res => res.text())
+                    .then(html => {
+                        const templateWrapper = document.createElement('div');
+                        templateWrapper.innerHTML = html;
+                        return templateWrapper.firstElementChild;
+                    });
             }
 
             return fetch(`/templates/${type}.html`)
@@ -1277,7 +1297,7 @@
             const staff = data.staff;
             const decoded = data.decoded;
 
-            if ( card.card_type === 'access_card'){
+            if (card.card_type === 'access_card') {
                 // Load template
                 const accessEl = await loadCardTemplate('front', 'access');
 
@@ -1411,27 +1431,27 @@
             }
 
             fetch(`/reception/visits/${currentVisitId}/issue-card`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Card issued successfully');
-                    closeIssueCardModal();
-                    location.reload();
-                } else {
-                    alert(data.error || 'Failed to issue card');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error issuing card');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Card issued successfully');
+                        closeIssueCardModal();
+                        location.reload();
+                    } else {
+                        alert(data.error || 'Failed to issue card');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error issuing card');
+                });
         }
 
         function showCardSide(side) {
@@ -1460,7 +1480,7 @@
             const iframe = document.getElementById('print-frame');
             iframe.src = url;
 
-            iframe.onload = function () {
+            iframe.onload = function() {
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
             };
@@ -1476,301 +1496,301 @@
         });
     </script>
 
-<script>
-    let currentStream = null;
-    let currentVisitorId = null;
+    <script>
+        let currentStream = null;
+        let currentVisitorId = null;
 
-    function showPhotoOptions() {
-        document.getElementById('photo-options-modal').classList.remove('hidden');
-        document.getElementById('photo-options-modal').classList.add('flex');
+        function showPhotoOptions() {
+            document.getElementById('photo-options-modal').classList.remove('hidden');
+            document.getElementById('photo-options-modal').classList.add('flex');
 
-        // Show remove button if photo exists
-        const visitorImage = document.getElementById('visitor-image');
-        const removeBtn = document.getElementById('remove-photo-btn');
-        if (!visitorImage.classList.contains('hidden')) {
-            removeBtn.classList.remove('hidden');
-        }
-    }
-
-    function closePhotoOptions() {
-        document.getElementById('photo-options-modal').classList.add('hidden');
-        document.getElementById('photo-options-modal').classList.remove('flex');
-        hideUrlInput();
-        stopCamera();
-    }
-
-    function triggerFileUpload() {
-        document.getElementById('photo-upload').click();
-    }
-
-    // function handleFileUpload(event) {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onload = function(e) {
-    //             setVisitorImage(e.target.result);
-    //             closePhotoOptions();
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // }
-
-    function showUrlInput() {
-        document.getElementById('url-input-section').classList.remove('hidden');
-    }
-
-    function hideUrlInput() {
-        document.getElementById('url-input-section').classList.add('hidden');
-        document.getElementById('image-url-input').value = '';
-    }
-
-    // function loadFromUrl() {
-    //     const url = document.getElementById('image-url-input').value.trim();
-    //     if (url) {
-    //         // Test if the URL loads properly
-    //         const img = new Image();
-    //         img.onload = function() {
-    //             setVisitorImage(url);
-    //             closePhotoOptions();
-    //         };
-    //         img.onerror = function() {
-    //             alert('Could not load image from URL. Please check the URL and try again.');
-    //         };
-    //         img.src = url;
-    //     }
-    // }
-
-    async function openCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            currentStream = stream;
-            const video = document.getElementById('camera-video');
-            video.srcObject = stream;
-            video.play();
-            document.getElementById('camera-section').classList.remove('hidden');
-        } catch (error) {
-            alert('Could not access camera. Please make sure you have given permission and try again.');
-            console.error('Camera error:', error);
-        }
-    }
-
-    // function capturePhoto() {
-    //     const video = document.getElementById('camera-video');
-    //     const canvas = document.getElementById('camera-canvas');
-    //     const context = canvas.getContext('2d');
-
-    //     canvas.width = video.videoWidth;
-    //     canvas.height = video.videoHeight;
-    //     context.drawImage(video, 0, 0);
-
-    //     const imageDataUrl = canvas.toDataURL('image/png');
-    //     setVisitorImage(imageDataUrl);
-    //     stopCamera();
-    //     closePhotoOptions();
-    // }
-
-    function stopCamera() {
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
-        }
-        document.getElementById('camera-section').classList.add('hidden');
-    }
-
-    function setVisitorImage(src) {
-        const defaultIcon = document.getElementById('default-icon');
-        const visitorImage = document.getElementById('visitor-image');
-
-        defaultIcon.classList.add('hidden');
-        visitorImage.src = src;
-        visitorImage.classList.remove('hidden');
-    }
-
-    // function removePhoto() {
-    //     const defaultIcon = document.getElementById('default-icon');
-    //     const visitorImage = document.getElementById('visitor-image');
-
-    //     visitorImage.classList.add('hidden');
-    //     visitorImage.src = '';
-    //     defaultIcon.classList.remove('hidden');
-
-    //     closePhotoOptions();
-    // }
-
-    // Close modal when clicking outside
-    document.getElementById('photo-options-modal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closePhotoOptions();
-        }
-    });
-
-    // updated code
-    function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file && currentVisitorId) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            setVisitorImage(e.target.result);
-
-            // Save to database
-            const formData = new FormData();
-            formData.append('photo', file);
-
-            savePhotoToDatabase('upload', formData);
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-function loadFromUrl() {
-    const url = document.getElementById('image-url-input').value.trim();
-    if (url && currentVisitorId) {
-        // Test if the URL loads properly
-        const img = new Image();
-        img.onload = function() {
-            setVisitorImage(url);
-
-            // Save to database
-            const formData = new FormData();
-            formData.append('photo_url', url);
-
-            savePhotoToDatabase('url', formData);
-            closePhotoOptions();
-        };
-        img.onerror = function() {
-            alert('Could not load image from URL. Please check the URL and try again.');
-        };
-        img.src = url;
-    }
-}
-
-function capturePhoto() {
-    const video = document.getElementById('camera-video');
-    const canvas = document.getElementById('camera-canvas');
-    const context = canvas.getContext('2d');
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0);
-
-    const imageDataUrl = canvas.toDataURL('image/png');
-    setVisitorImage(imageDataUrl);
-
-    if (currentVisitorId) {
-        // Save to database
-        const formData = new FormData();
-        formData.append('photo_data', imageDataUrl);
-
-        savePhotoToDatabase('base64', formData);
-    }
-
-    stopCamera();
-    closePhotoOptions();
-}
-
-function removePhoto() {
-    const defaultIcon = document.getElementById('default-icon');
-    const visitorImage = document.getElementById('visitor-image');
-
-    visitorImage.classList.add('hidden');
-    visitorImage.src = '';
-    defaultIcon.classList.remove('hidden');
-
-    if (currentVisitorId) {
-        // Delete from database
-        fetch(`/reception/visitors/${currentVisitorId}/photo`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json',
+            // Show remove button if photo exists
+            const visitorImage = document.getElementById('visitor-image');
+            const removeBtn = document.getElementById('remove-photo-btn');
+            if (!visitorImage.classList.contains('hidden')) {
+                removeBtn.classList.remove('hidden');
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Photo deleted successfully');
-            } else {
-                console.error('Failed to delete photo:', data.error);
+        }
+
+        function closePhotoOptions() {
+            document.getElementById('photo-options-modal').classList.add('hidden');
+            document.getElementById('photo-options-modal').classList.remove('flex');
+            hideUrlInput();
+            stopCamera();
+        }
+
+        function triggerFileUpload() {
+            document.getElementById('photo-upload').click();
+        }
+
+        // function handleFileUpload(event) {
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         const reader = new FileReader();
+        //         reader.onload = function(e) {
+        //             setVisitorImage(e.target.result);
+        //             closePhotoOptions();
+        //         };
+        //         reader.readAsDataURL(file);
+        //     }
+        // }
+
+        function showUrlInput() {
+            document.getElementById('url-input-section').classList.remove('hidden');
+        }
+
+        function hideUrlInput() {
+            document.getElementById('url-input-section').classList.add('hidden');
+            document.getElementById('image-url-input').value = '';
+        }
+
+        // function loadFromUrl() {
+        //     const url = document.getElementById('image-url-input').value.trim();
+        //     if (url) {
+        //         // Test if the URL loads properly
+        //         const img = new Image();
+        //         img.onload = function() {
+        //             setVisitorImage(url);
+        //             closePhotoOptions();
+        //         };
+        //         img.onerror = function() {
+        //             alert('Could not load image from URL. Please check the URL and try again.');
+        //         };
+        //         img.src = url;
+        //     }
+        // }
+
+        async function openCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true
+                });
+                currentStream = stream;
+                const video = document.getElementById('camera-video');
+                video.srcObject = stream;
+                video.play();
+                document.getElementById('camera-section').classList.remove('hidden');
+            } catch (error) {
+                alert('Could not access camera. Please make sure you have given permission and try again.');
+                console.error('Camera error:', error);
             }
-        })
-        .catch(error => {
-            console.error('Error deleting photo:', error);
+        }
+
+        // function capturePhoto() {
+        //     const video = document.getElementById('camera-video');
+        //     const canvas = document.getElementById('camera-canvas');
+        //     const context = canvas.getContext('2d');
+
+        //     canvas.width = video.videoWidth;
+        //     canvas.height = video.videoHeight;
+        //     context.drawImage(video, 0, 0);
+
+        //     const imageDataUrl = canvas.toDataURL('image/png');
+        //     setVisitorImage(imageDataUrl);
+        //     stopCamera();
+        //     closePhotoOptions();
+        // }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            document.getElementById('camera-section').classList.add('hidden');
+        }
+
+        function setVisitorImage(src) {
+            const defaultIcon = document.getElementById('default-icon');
+            const visitorImage = document.getElementById('visitor-image');
+
+            defaultIcon.classList.add('hidden');
+            visitorImage.src = src;
+            visitorImage.classList.remove('hidden');
+        }
+
+        // function removePhoto() {
+        //     const defaultIcon = document.getElementById('default-icon');
+        //     const visitorImage = document.getElementById('visitor-image');
+
+        //     visitorImage.classList.add('hidden');
+        //     visitorImage.src = '';
+        //     defaultIcon.classList.remove('hidden');
+
+        //     closePhotoOptions();
+        // }
+
+        // Close modal when clicking outside
+        document.getElementById('photo-options-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePhotoOptions();
+            }
         });
-    }
 
-    closePhotoOptions();
-}
+        // updated code
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file && currentVisitorId) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    setVisitorImage(e.target.result);
 
-// New function to save photo to database
-function savePhotoToDatabase(type, formData) {
-    if (!currentVisitorId) {
-        console.error('No visitor ID available');
-        return;
-    }
+                    // Save to database
+                    const formData = new FormData();
+                    formData.append('photo', file);
 
-    let endpoint;
-    switch(type) {
-        case 'upload':
-            endpoint = `/reception/visitors/${currentVisitorId}/photo/upload`;
-            break;
-        case 'base64':
-            endpoint = `/reception/visitors/${currentVisitorId}/photo/base64`;
-            break;
-        case 'url':
-            endpoint = `/reception/visitors/${currentVisitorId}/photo/url`;
-            break;
-        default:
-            console.error('Invalid photo save type');
-            return;
-    }
+                    savePhotoToDatabase('upload', formData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
-    fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json',
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Photo saved successfully');
+        function loadFromUrl() {
+            const url = document.getElementById('image-url-input').value.trim();
+            if (url && currentVisitorId) {
+                // Test if the URL loads properly
+                const img = new Image();
+                img.onload = function() {
+                    setVisitorImage(url);
+
+                    // Save to database
+                    const formData = new FormData();
+                    formData.append('photo_url', url);
+
+                    savePhotoToDatabase('url', formData);
+                    closePhotoOptions();
+                };
+                img.onerror = function() {
+                    alert('Could not load image from URL. Please check the URL and try again.');
+                };
+                img.src = url;
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('camera-video');
+            const canvas = document.getElementById('camera-canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+
+            const imageDataUrl = canvas.toDataURL('image/png');
+            setVisitorImage(imageDataUrl);
+
+            if (currentVisitorId) {
+                // Save to database
+                const formData = new FormData();
+                formData.append('photo_data', imageDataUrl);
+
+                savePhotoToDatabase('base64', formData);
+            }
+
+            stopCamera();
             closePhotoOptions();
-        } else {
-            console.error('Failed to save photo:', data.error);
-            alert('Failed to save photo: ' + data.error);
         }
-    })
-    .catch(error => {
-        console.error('Error saving photo:', error);
-        alert('An error occurred while saving the photo');
-    });
-}
 
-// Function to load existing photo when page loads
-function loadExistingPhoto() {
-    if (!currentVisitorId) return;
+        function removePhoto() {
+            const defaultIcon = document.getElementById('default-icon');
+            const visitorImage = document.getElementById('visitor-image');
 
-    fetch(`/reception/visitors/${currentVisitorId}/photo`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
+            visitorImage.classList.add('hidden');
+            visitorImage.src = '';
+            defaultIcon.classList.remove('hidden');
+
+            if (currentVisitorId) {
+                // Delete from database
+                fetch(`/reception/visitors/${currentVisitorId}/photo`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Photo deleted successfully');
+                        } else {
+                            console.error('Failed to delete photo:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting photo:', error);
+                    });
+            }
+
+            closePhotoOptions();
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success && data.has_photo) {
-            setVisitorImage(data.photo_url);
+
+        // New function to save photo to database
+        function savePhotoToDatabase(type, formData) {
+            if (!currentVisitorId) {
+                console.error('No visitor ID available');
+                return;
+            }
+
+            let endpoint;
+            switch (type) {
+                case 'upload':
+                    endpoint = `/reception/visitors/${currentVisitorId}/photo/upload`;
+                    break;
+                case 'base64':
+                    endpoint = `/reception/visitors/${currentVisitorId}/photo/base64`;
+                    break;
+                case 'url':
+                    endpoint = `/reception/visitors/${currentVisitorId}/photo/url`;
+                    break;
+                default:
+                    console.error('Invalid photo save type');
+                    return;
+            }
+
+            fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Photo saved successfully');
+                        closePhotoOptions();
+                    } else {
+                        console.error('Failed to save photo:', data.error);
+                        alert('Failed to save photo: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving photo:', error);
+                    alert('An error occurred while saving the photo');
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error loading photo:', error);
-    });
-}
-</script>
+
+        // Function to load existing photo when page loads
+        function loadExistingPhoto() {
+            if (!currentVisitorId) return;
+
+            fetch(`/reception/visitors/${currentVisitorId}/photo`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.has_photo) {
+                        setVisitorImage(data.photo_url);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading photo:', error);
+                });
+        }
+    </script>
 </body>
+
 </html>
-
-
-
