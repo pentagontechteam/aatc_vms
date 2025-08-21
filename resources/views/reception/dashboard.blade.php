@@ -542,7 +542,7 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="processCheckout()"
+                    <button id="checkout-btn" type="button" onclick="processCheckout()"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
                         Confirm Checkout
                     </button>
@@ -1107,8 +1107,13 @@
         }
 
         function processCheckout() {
+            const btn = document.getElementById('checkout-btn');
             const notes = document.getElementById('checkout-notes').value;
             const cardRetrieved = document.getElementById('card_retrieved_checkbox').checked;
+
+            // Set loading state
+            btn.disabled = true;
+            btn.textContent = 'Checking out...';
 
             fetch(`/reception/visits/${currentCheckoutVisitId}/checkout`, {
                 method: 'POST',
@@ -1134,6 +1139,11 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Error checking out visitor');
+            })
+            .finally(() => {
+                // Reset button state
+                btn.disabled = false;
+                btn.textContent = 'Confirm Checkout';
             });
         }
 

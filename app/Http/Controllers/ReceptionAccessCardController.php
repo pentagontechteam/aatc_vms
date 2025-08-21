@@ -261,7 +261,7 @@ class ReceptionAccessCardController extends Controller
 //         ]);
 //     }
 
-    public function getCheckoutDetails(Visit $visit)
+public function getCheckoutDetails(Visit $visit)
 {
     $hasAccessCard = $visit->accessCard && $visit->accessCard->card_type === 'access_card';
     $hasCard = (bool) $visit->accessCard;
@@ -274,9 +274,6 @@ class ReceptionAccessCardController extends Controller
             ? 'Access Card'
             : 'Visitor Pass';
 
-        $decodedSerial = $visit->accessCard->serial_number;
-
-        // Only decode Visitor Pass serial numbers
         if ($visit->accessCard->card_type === 'visitor_pass') {
             $map = [
                 'Ground Floor' => 'GF',
@@ -300,12 +297,12 @@ class ReceptionAccessCardController extends Controller
                 'Floor 9 - Left Wing' => 'F9LW',
             ];
 
-            $reverseMap = array_flip($map); // reverse for decoding
+            $reverseMap = array_flip($map);
 
-            $serial = $visit->accessCard->serial_number; // e.g. "GF-2"
+            $serial = $visit->accessCard->serial_number;
             $parts = explode('-', $serial);
 
-            if (count($parts) === 'Visitor Pass') {
+            if (count($parts) === 2) {
                 $abbr = $parts[0];
                 $num = $parts[1];
 
@@ -323,7 +320,7 @@ class ReceptionAccessCardController extends Controller
         'hasCard' => $hasCard,
         'accessCard' => $hasCard ? $visit->accessCard : null,
         'cardType' => $cardType,
-        'decodedSerial' => $decodedSerial,
+        'decodedSerial' => $decodedSerial, // only meaningful for Visitor Pass
     ]);
 }
 
