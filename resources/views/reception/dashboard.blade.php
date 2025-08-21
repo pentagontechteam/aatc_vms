@@ -527,8 +527,18 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="checkout-notes" class="block text-sm font-medium text-gray-700">Notes (optional)</label>
-                        <textarea id="checkout-notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"></textarea>
+                        <label for="checkout-notes" class="block text-sm font-medium text-gray-700">Note (optional)</label>
+                        <textarea placeholder="Optional checkout note" id="checkout-notes" rows="2" class="mt-1 w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"></textarea>
+                    </div>
+
+                    <div id="card_retrieved_con" class="space-y-2 hidden">
+                        <div class="flex items-center">
+                            <input id="card_retrieved_checkbox" name="card_retrieved_checkbox" type="checkbox"
+                                class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded">
+                            <label for="card_retrieved_checkbox" class="ml-2 block text-sm text-gray-700">
+                                Card Retrieved
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -1075,12 +1085,14 @@
                 .then(data => {
                     if (data.success) {
                         // Show card info if visitor has an access card
-                        if (data.hasAccessCard) {
+                        if (data.hasCard) {
                             document.getElementById('checkout-card-info').classList.remove('hidden');
                             document.getElementById('checkout-card-number').textContent =
-                                data.accessCard.serial_number + ' (' + data.accessCard.access_level + ')';
+                                data.decodedSerial + ' (' + data.cardType + ')';
+                            document.getElementById('card_retrieved_con').classList.remove('hidden');
                         } else {
                             document.getElementById('checkout-card-info').classList.add('hidden');
+                            document.getElementById('card_retrieved_con').classList.add('hidden');
                         }
                     } else {
                         alert(data.error || 'Failed to fetch checkout details');
@@ -1096,32 +1108,35 @@
 
         function processCheckout() {
             const notes = document.getElementById('checkout-notes').value;
+            const cardRetrieved = document.getElementById('card_retrieved_checkbox').checked;
 
             fetch(`/reception/visits/${currentCheckoutVisitId}/checkout`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        notes: notes
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    notes: notes,
+                    card_retrieved: cardRetrieved
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Visitor checked out successfully');
-                        closeCheckoutModal();
-                        location.reload();
-                    } else {
-                        alert(data.error || 'Failed to checkout visitor');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error checking out visitor');
-                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Visitor checked out successfully');
+                    closeCheckoutModal();
+                    location.reload();
+                } else {
+                    alert(data.error || 'Failed to checkout visitor');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error checking out visitor');
+            });
         }
+
     </script>
 
     <script>

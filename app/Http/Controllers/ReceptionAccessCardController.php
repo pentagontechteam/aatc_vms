@@ -261,25 +261,81 @@ class ReceptionAccessCardController extends Controller
 //         ]);
 //     }
 
-    // check out functions
     public function getCheckoutDetails(Visit $visit)
-    {
-        $hasAccessCard = $visit->accessCard && $visit->accessCard->card_type === 'access_card';
+{
+    $hasAccessCard = $visit->accessCard && $visit->accessCard->card_type === 'access_card';
+    $hasCard = (bool) $visit->accessCard;
 
-        return response()->json([
-            'success' => true,
-            'hasAccessCard' => $hasAccessCard,
-            'accessCard' => $hasAccessCard ? $visit->accessCard : null
-        ]);
+    $cardType = null;
+    $decodedSerial = null;
+
+    if ($hasCard) {
+        $cardType = $visit->accessCard->card_type === 'access_card'
+            ? 'Access Card'
+            : 'Visitor Pass';
+
+        $decodedSerial = $visit->accessCard->serial_number;
+
+        // Only decode Visitor Pass serial numbers
+        if ($visit->accessCard->card_type === 'visitor_pass') {
+            $map = [
+                'Ground Floor' => 'GF',
+                'Mezzanine' => 'MZ',
+                'Floor 1' => 'F1',
+                'Floor 2 - Right Wing' => 'F2RW',
+                'Floor 2 - Left Wing' => 'F2LW',
+                'Floor 3 - Right Wing' => 'F3RW',
+                'Floor 3 - Left Wing' => 'F3LW',
+                'Floor 4 - Right Wing' => 'F4RW',
+                'Floor 4 - Left Wing' => 'F4LW',
+                'Floor 5 - Right Wing' => 'F5RW',
+                'Floor 5 - Left Wing' => 'F5LW',
+                'Floor 6 - Right Wing' => 'F6RW',
+                'Floor 6 - Left Wing' => 'F6LW',
+                'Floor 7 - Right Wing' => 'F7RW',
+                'Floor 7 - Left Wing' => 'F7LW',
+                'Floor 8 - Right Wing' => 'F8RW',
+                'Floor 8 - Left Wing' => 'F8LW',
+                'Floor 9 - Right Wing' => 'F9RW',
+                'Floor 9 - Left Wing' => 'F9LW',
+            ];
+
+            $reverseMap = array_flip($map); // reverse for decoding
+
+            $serial = $visit->accessCard->serial_number; // e.g. "GF-2"
+            $parts = explode('-', $serial);
+
+            if (count($parts) === 'Visitor Pass') {
+                $abbr = $parts[0];
+                $num = $parts[1];
+
+                $floorName = $reverseMap[$abbr] ?? $abbr;
+                $decodedSerial = $floorName . ' - ' . $num;
+            } else {
+                $decodedSerial = $serial;
+            }
+        }
     }
+
+    return response()->json([
+        'success' => true,
+        'hasAccessCard' => $hasAccessCard,
+        'hasCard' => $hasCard,
+        'accessCard' => $hasCard ? $visit->accessCard : null,
+        'cardType' => $cardType,
+        'decodedSerial' => $decodedSerial,
+    ]);
+}
+
 
     public function checkout(Request $request, Visit $visit)
     {
         try {
             DB::beginTransaction();
 
-            // Retrieve card if one was issued
-            if ($visit->accessCard) {
+            $receptionist = auth('receptionist')->user();
+
+            if ($request->boolean('card_retrieved') && $visit->accessCard) {
                 $visit->accessCard->update([
                     'issued_to' => null,
                     'issued_at' => null,
@@ -290,11 +346,10 @@ class ReceptionAccessCardController extends Controller
 
                 $visit->update([
                     'card_retrieved_at' => now(),
-                    'checkout_by' => auth()->user()->name
+                    'checkout_by' => $receptionist->name
                 ]);
             }
 
-            // Checkout the visitor
             $visit->update([
                 'checked_out_at' => now(),
                 'is_checked_out' => true,
