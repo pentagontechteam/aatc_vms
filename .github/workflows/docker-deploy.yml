@@ -70,11 +70,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKERHUB_REPOSITORY }}
-          tags: |
-            type=raw,value=${{ env.git-tag }}
-            type=raw,value=latest
-            type=raw,value=v${{ env.major-version }}.${{ env.minor-version }}
-            type=sha,prefix={{branch}}-
+          tags: type=raw,value=${{ env.git-tag }}
 
       - name: Build and push Docker image
         id: build-and-push
