@@ -1,0 +1,174 @@
+name: Build and Push Laravel Docker Image to DockerHub
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+env:
+  DOCKERHUB_REPOSITORY: pentagontech/aatc-vms-app
+  PHP_VERSION: 8.2
+  NODE_VERSION: 18
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # Only run on push to main or when PR to main is merged
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true))
+
+    permissions:
+      contents: write     # To create and push tags
+      actions: read      # To access workflow actions
+      packages: write    # For Docker packages
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper tagging
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Make versioning script executable
+        run: chmod +x ./git_update.sh
+
+      - name: Automatic Semantic Versioning
+        id: increment-git-tag
+        run: |
+          # Determine version bump type based on commit messages or PR labels
+          VERSION_TYPE="patch"  # Default to patch
+
+          # Check recent commits for conventional commit patterns
+          if git log --oneline -10 | grep -q "^[a-f0-9]\+ feat\|^[a-f0-9]\+ feature"; then
+            VERSION_TYPE="minor"
+          elif git log --oneline -10 | grep -q "^[a-f0-9]\+ BREAKING CHANGE\|^[a-f0-9]\+ major"; then
+            VERSION_TYPE="major"
+          fi
+
+          echo "Detected version type: $VERSION_TYPE"
+          bash ./git_update.sh -v $VERSION_TYPE
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKERHUB_REPOSITORY }}
+          tags: |
+            type=raw,value=${{ env.git-tag }}
+            type=raw,value=latest
+            type=raw,value=v${{ env.major-version }}.${{ env.minor-version }}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            PHP_VERSION=${{ env.PHP_VERSION }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+
+      - name: Generate deployment summary
+        run: |
+          echo "## 🚀 Laravel Docker Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Version** | \`${{ env.git-tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image** | \`${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Latest** | \`${{ env.DOCKERHUB_REPOSITORY }}:latest\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Platforms** | \`linux/amd64, linux/arm64\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Server Deployment Commands" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Pull the latest image" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Stop existing container (if running)" >> $GITHUB_STEP_SUMMARY
+          echo "docker stop aatc-vms-app || true" >> $GITHUB_STEP_SUMMARY
+          echo "docker rm aatc-vms-app || true" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Run new container" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -d \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --name aatc-vms-app \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --restart unless-stopped \\" >> $GITHUB_STEP_SUMMARY
+          echo "  -p 8000:80 \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --env-file .env.production \\" >> $GITHUB_STEP_SUMMARY
+          echo "  ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag_name: ${{ env.git-tag }}
+          release_name: "Release ${{ env.git-tag }}"
+          body: |
+            ## 🎉 Laravel Application Release ${{ env.git-tag }}
+
+            ### 🔧 Changes
+            - Docker image built and pushed to DockerHub
+            - Version: `${{ env.git-tag }}`
+            - Commit: `${{ github.sha }}`
+
+            ### 🐳 Docker Image
+            ```bash
+            docker pull ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}
+            ```
+
+            ### 📖 Deployment Guide
+            1. Pull the image: `docker pull ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}`
+            2. Update your environment variables in `.env.production`
+            3. Run the container with the deployment commands shown above
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ env.git-tag }}
+          draft: false
+          prerelease: false
+
+  # Optional: Security scanning job
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: success()
+
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.git-tag }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
