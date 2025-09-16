@@ -40,12 +40,15 @@ jobs:
         id: increment-git-tag
         run: |
           # Determine version bump type based on commit messages or PR labels
-          VERSION_TYPE="patch"  # Default to patch
+          # Default to patch
+          VERSION_TYPE="patch"
 
-          # Check recent commits for conventional commit patterns
-          if git log --oneline -10 | grep -q "^[a-f0-9]\+ feat\|^[a-f0-9]\+ feature"; then
+          # Look at commit messages only (drop hashes)
+          COMMITS=$(git log --pretty=format:%s -10)
+
+          if echo "$COMMITS" | grep -qiE '^feat|^feature'; then
             VERSION_TYPE="minor"
-          elif git log --oneline -10 | grep -q "^[a-f0-9]\+ BREAKING CHANGE\|^[a-f0-9]\+ major"; then
+          elif echo "$COMMITS" | grep -qiE 'BREAKING CHANGE|^major'; then
             VERSION_TYPE="major"
           fi
 
@@ -124,7 +127,7 @@ jobs:
           tag_name: ${{ env.git-tag }}
           release_name: "Release ${{ env.git-tag }}"
           body: |
-            ## 🎉 Laravel Application Release ${{ env.git-tag }}
+            ## AATC-VMS Application Release ${{ env.git-tag }}
 
             ### 🔧 Changes
             - Docker image built and pushed to DockerHub
