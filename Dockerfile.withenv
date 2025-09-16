@@ -26,15 +26,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN a2enmod rewrite
 
 # Configure Apache virtual host
-RUN echo '\n\
+RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
-    \n\
+    <Directory /var/www/html/public>\n\
         AllowOverride All\n\
         Require all granted\n\
-    \n\
+    </Directory>\n\
     ErrorLog ${APACHE_LOG_DIR}/error.log\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-' > /etc/apache2/sites-available/000-default.conf
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 # Copy application files
 COPY . /var/www/html
@@ -50,9 +50,12 @@ RUN composer install --no-dev --optimize-autoloader
 # Install Node dependencies and build assets
 RUN npm install && npm run build
 
-# Remove these lines:
-# RUN [ -f .env.example ] && cp .env.example .env || echo ".env not found, skipping"
-# RUN php artisan key:generate
+# Create .env file if it doesn't exist
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
+RUN [ -f .env.example ] && cp .env.example .env || echo ".env not found, skipping"
+
+# Generate application key
+RUN php artisan key:generate
 
 # Expose port 80
 EXPOSE 80
